@@ -10,8 +10,12 @@ const authenticateUser = async (data) => {
 
     if (!fetchedUser) throw Error("user don't exict in db");
 
+    if (!fetchedUser.verified) {
+      throw Error("User is not verified check the email to complet");
+    }
+
     const hashedPassword = fetchedUser.password;
-    const passwordMatch = virifyHashData(password, hashedPassword);
+    const passwordMatch = await virifyHashData(password, hashedPassword);
     if (!passwordMatch) throw Error("invalide password");
     const tokenData = { userId: fetchedUser._id, email };
     const token = await createToken(tokenData);

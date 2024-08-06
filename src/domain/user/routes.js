@@ -6,6 +6,8 @@ const auth = require("../../middleware/auth");
 
 const router = express.Router();
 
+const { sendVerificationEmail } = require("../email_verfiication/controller");
+
 //proctected route
 
 router.get("/private-data", auth, (req, res) => {
@@ -50,7 +52,7 @@ router.post("/sign-up", async (req, res) => {
       email,
       password,
     });
-
+    await sendVerificationEmail({ email });
     res.status(200).json(newUser);
   } catch (error) {
     res.status(400).send(error.message);
