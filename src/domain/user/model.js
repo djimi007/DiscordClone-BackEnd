@@ -8,8 +8,38 @@ const UserSchema = new Schema({
   password: String,
   token: String,
   verified: { type: Boolean, default: false },
-  serverCrated: [String],
-  serverEnrolled: [String],
+  serverCrated: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Server",
+    },
+  ],
+  requests: [
+    {
+      from: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+      },
+      status: {
+        type: String,
+        enum: ["pending", "accepted", "rejected"],
+        default: "pending",
+      },
+    },
+  ],
+  messages: [
+    {
+      type: mongoose.Schema.ObjectId,
+      ref: "Message",
+    },
+  ],
+  friends: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+  ],
 });
 
 const User = mongoose.model("User", UserSchema);

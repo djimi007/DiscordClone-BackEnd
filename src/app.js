@@ -2,13 +2,17 @@ require("./config/db");
 
 const express = require("express");
 
+const path = require("path");
+
 const bodyParser = express.json;
 
 const cors = require("cors");
 
-const routes = require("./routes");
-
 const app = express();
+
+app.use(express.static(path.join(__dirname, "public")));
+
+const routes = require("./routes");
 
 app.use(bodyParser());
 

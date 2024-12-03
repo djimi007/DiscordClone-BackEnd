@@ -1,6 +1,6 @@
 const User = require("./model");
 const { hashData, virifyHashData } = require("../../utils/hashData");
-const createToken = require("../../utils/createToken");
+const { createToken } = require("../../utils/createToken");
 
 const authenticateUser = async (data) => {
   try {

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>WebSocket Client Test</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.4/socket.io.js"></script>
+  </head>
+  <body>
+    <h1>WebSocket Client Test</h1>
+    <div id="messages"></div>
+
+    <script>
+      const socket = io("ws://localhost:5000");
+
+      socket.on("connect", () => {
+        console.log("Connected to WebSocket server");
+        addMessage("Connected to WebSocket server");
+      });
+
+      socket.on("disconnect", () => {
+        console.log("Disconnected from WebSocket server");
+        addMessage("Disconnected from WebSocket server");
+      });
+
+      socket.on("chat message", (msg) => {
+        console.log("Received message:", msg);
+        addMessage("Received message: " + msg);
+      });
+
+      function sendMessage(message) {
+        socket.emit("chat message", message);
+        addMessage("Sent message: " + message);
+      }
+
+      function addMessage(message) {
+        const messagesDiv = document.getElementById("messages");
+        const messageElement = document.createElement("div");
+        messageElement.innerText = message;
+        messagesDiv.appendChild(messageElement);
+      }
+
+      // Send a test message after a delay
+      setTimeout(() => {
+        sendMessage("Hello, server!");
+      }, 1000);
+    </script>
+  </body>
+</html>
