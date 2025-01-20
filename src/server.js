@@ -1,13 +1,12 @@
-const http = require("./utils/websockets/wsServer");
+const http = require("./websockets/wsServer");
 const { PORT } = process.env;
+
+const io = require("./websockets/ioConnetction");
 
 const startServer = async () => {
   try {
-    http.listen(PORT, () => {
-      console.log("====================================");
-      console.log(`Server Started at Port ${PORT} `);
-      console.log("====================================");
-    });
+    io.listen(3000);
+    http.listen(PORT);
   } catch (error) {
     console.log("====================================");
     console.log("Error on " + error);

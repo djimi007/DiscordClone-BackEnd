@@ -1,4 +1,4 @@
-const sendMessage = require("./controller");
+const { sendMessage } = require("./controller");
 
 const router = require("express").Router();
 
@@ -9,8 +9,12 @@ router.post("/send", async (req, res) => {
     throw Error("senderId , reciverId and content are required");
 
   try {
-    const sendMessagie = await sendMessage({ senderId, reciverId, content });
-    res.status(200).json(sendMessagie);
+    const sendMessageLocal = await sendMessage({
+      senderId,
+      reciverId,
+      content,
+    });
+    res.status(200).json(sendMessageLocal);
   } catch (error) {
     res.status(400).send(error.message);
   }

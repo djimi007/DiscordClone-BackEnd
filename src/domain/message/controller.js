@@ -1,33 +1,36 @@
-const User = require("../user/model");
 const MessageModel = require("./model");
+const User = require("../user/model");
 
-const userSocketMap = require("../../utils/websockets/socketMap");
-
-const io = require("../../utils/websockets/wsServer");
-
-const sendMessage = async ({ senderId, reciverId, content }) => {
+const sendMessage = async ({ roomID, message }, io) => {
   try {
-    const reciver = await User.findById(reciverId);
+    // Create and save the message
+    const newMessage = new MessageModel({
+      message,
+      roomID,
+    });
+    await newMessage.save();
 
-    if (!reciver) throw Error("reciver dont exist");
+    // Emit the message to the room
+    io.to(roomID).emit("receiveMessage", newMessage);
 
-    const message = new MessageModel({ content, senderId, reciverId });
-    reciver.messages.push(message);
-    const updatedValue = await reciver.save();
-
-    const receiverSocketId = userSocketMap[reciverId];
-
-    if (receiverSocketId) {
-      console.log("emitting recieveMessage event to the reciver", reciverId);
-      io.to(receiverSocketId).emit("newMessage", message);
-    } else {
-      console.log("Receiver socket ID not found");
-    }
-
-    return updatedValue;
+    return newMessage;
   } catch (error) {
+    console.error(error);
     throw error;
   }
 };
 
-module.exports = sendMessage;
+const getMessages = async ({ roomID }, socket) => {
+  try {
+    const messages = await MessageModel.find({ roomID }).populate(
+      "senderId receiverId"
+    );
+
+    // Send all messages to the socket
+    socket.emit("All-Messages", messages);
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+module.exports = { sendMessage, getMessages };

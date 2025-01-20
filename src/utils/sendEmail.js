@@ -8,15 +8,11 @@ let transporter = nodemailer.createTransport({
   auth: {
     user: AUTH_EMAIL,
     pass: AUTH_PASSWORD,
-  }
+  },
 });
 
-transporter.verify((error, success) => {
+transporter.verify((error) => {
   if (error) console.log(error);
-  else {
-    console.log("Ready For Message");
-    console.log(success);
-  }
 });
 
 const sendEmail = async (mailOption) => {
